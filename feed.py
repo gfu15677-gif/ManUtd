@@ -7,31 +7,30 @@ from helpers import time_difference
 
 load_dotenv()
 
-RUN_FREQUENCY = int(os.getenv("RUN_FREQUENCY", "3600"))  # 单位：秒（默认1小时）
+RUN_FREQUENCY = int(os.getenv("RUN_FREQUENCY", "3600"))
 
-# ===== 曼联 RSS 源列表 =====
-# 你可以随时在这里添加或删除链接，一行一个
+# ===== 曼联 RSS 源（多个信源聚合）=====
 RSS_URLS = [
-    # 1. Google News 多关键词搜索（中英文全覆盖）
-    "https://news.google.com/rss/search?q=Manchester+United+OR+%E6%9B%BC%E8%81%94+OR+%E6%9B%BC%E5%BD%BB%E6%96%AF%E7%89%B9%E8%81%94&hl=zh-CN&gl=CN&ceid=CN:zh-Hans",
+    # 1. Google News 多关键词搜索（基础）
+    "https://news.google.com/rss/search?q=Manchester+United+OR+%E6%9B%BC%E8%81%94+OR+%E7%BA%A2%E9%AD%94+OR+MUFC+OR+%E6%9B%BC%E5%BD%BB%E6%96%AF%E7%89%B9%E8%81%94+OR+Man+Utd+OR+%E6%A0%BC%E6%9E%97%E4%BC%8D%E5%BE%B7&hl=zh-CN&gl=CN&ceid=CN:zh-Hans",
 
-    # 2. 曼联官方新闻（官方 RSS 通常为 /feed）
-    "https://www.manutd.com/feed",
+    # 2. 主流体育媒体
+    "http://feeds.bbci.co.uk/sport/football/teams/manchester-united/rss.xml",  # BBC Sport
+    "https://www.skysports.com/feeds/teams/manchester-united",                 # Sky Sports（需确认）
+    "https://www.espn.com/espn/rss/teams/news?id=360",                         # ESPN（曼联 ID 通常是 360）
+    "https://www.theguardian.com/football/manchester-united/rss",              # The Guardian
+    "https://www.telegraph.co.uk/sport/football/teams/manchester-united/rss",  # The Telegraph
 
-    # 3. BBC Sport 曼联标签
-    "https://feeds.bbci.co.uk/sport/football/teams/manchester-united/rss.xml",
+    # 3. 俱乐部官方（如果提供 RSS）
+    "https://www.manutd.com/feed",                                              # 曼联官网（需确认）
 
-    # 4. Sky Sports 曼联新闻
-    "https://www.skysports.com/feeds/teams/manchester-united",
+    # 4. 球迷社区
+    "https://www.reddit.com/r/reddevils/.rss",                                 # Reddit 曼联版
 
-    # 5. ESPN 曼联新闻
-    "https://www.espn.com/espn/rss/teams/news?id=360",
-
-    # 6. 虎扑体育曼联专区（如果提供 RSS）
-    # 虎扑可能没有公开 RSS，暂时保留 Google News 覆盖
+    # 5. 国内体育媒体（会用中文报道曼联）
+    "https://sports.sina.com.cn/global/manchesterunited/feed/",                # 新浪体育曼联专题
+    "https://www.dongqiudi.com/teams/5/feed/",                                 # 懂球帝曼联（需确认 ID）
 ]
-
-# ============================
 
 def _parse_struct_time_to_timestamp(st):
     if st:
@@ -98,5 +97,4 @@ def get_new_feed_items():
         key=lambda x: _parse_struct_time_to_timestamp(x.get("published_parsed"))
     )
     print(f"总共 {len(all_new_feed_items)} 条新文章待推送")
-
     return all_new_feed_items
