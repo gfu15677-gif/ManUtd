@@ -9,27 +9,33 @@ load_dotenv()
 
 RUN_FREQUENCY = int(os.getenv("RUN_FREQUENCY", "3600"))
 
-# ===== 曼联 RSS 源（多个信源聚合）=====
+# ===== 曼联 RSS 源（覆盖新闻+微信+抖音+B站+微博）=====
 RSS_URLS = [
     # 1. Google News 多关键词搜索（基础）
     "https://news.google.com/rss/search?q=Manchester+United+OR+%E6%9B%BC%E8%81%94+OR+%E7%BA%A2%E9%AD%94+OR+MUFC+OR+%E6%9B%BC%E5%BD%BB%E6%96%AF%E7%89%B9%E8%81%94+OR+Man+Utd+OR+%E6%A0%BC%E6%9E%97%E4%BC%8D%E5%BE%B7&hl=zh-CN&gl=CN&ceid=CN:zh-Hans",
 
     # 2. 主流体育媒体
-    "http://feeds.bbci.co.uk/sport/football/teams/manchester-united/rss.xml",  # BBC Sport
-    "https://www.skysports.com/feeds/teams/manchester-united",                 # Sky Sports（需确认）
-    "https://www.espn.com/espn/rss/teams/news?id=360",                         # ESPN（曼联 ID 通常是 360）
-    "https://www.theguardian.com/football/manchester-united/rss",              # The Guardian
-    "https://www.telegraph.co.uk/sport/football/teams/manchester-united/rss",  # The Telegraph
+    "http://feeds.bbci.co.uk/sport/football/teams/manchester-united/rss.xml",
+    "https://www.skysports.com/feeds/teams/manchester-united",
+    "https://www.espn.com/espn/rss/teams/news?id=360",
+    "https://www.theguardian.com/football/manchester-united/rss",
+    "https://www.telegraph.co.uk/sport/football/teams/manchester-united/rss",
 
-    # 3. 俱乐部官方（如果提供 RSS）
-    "https://www.manutd.com/feed",                                              # 曼联官网（需确认）
+    # 3. 俱乐部官方
+    "https://www.manutd.com/feed",
 
     # 4. 球迷社区
-    "https://www.reddit.com/r/reddevils/.rss",                                 # Reddit 曼联版
+    "https://www.reddit.com/r/reddevils/.rss",
 
-    # 5. 国内体育媒体（会用中文报道曼联）
-    "https://sports.sina.com.cn/global/manchesterunited/feed/",                # 新浪体育曼联专题
-    "https://www.dongqiudi.com/teams/5/feed/",                                 # 懂球帝曼联（需确认 ID）
+    # 5. 国内体育媒体
+    "https://sports.sina.com.cn/global/manchesterunited/feed/",
+    "https://www.dongqiudi.com/teams/5/feed/",
+
+    # 6. RSSHub 生成的社交媒体搜索
+    "https://rsshub.app/wechat/search/曼联",
+    "https://rsshub.app/douyin/search/曼联",
+    "https://rsshub.app/bilibili/vsearch/曼联",
+    "https://rsshub.app/weibo/search/曼联",
 ]
 
 def _parse_struct_time_to_timestamp(st):
