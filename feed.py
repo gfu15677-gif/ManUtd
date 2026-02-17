@@ -9,29 +9,29 @@ load_dotenv()
 
 RUN_FREQUENCY = int(os.getenv("RUN_FREQUENCY", "3600"))
 
-# ===== 曼联 RSS 源（覆盖新闻+微信+抖音+B站+微博）=====
+# ===== 曼联 RSS 源（包含主流媒体 + RSSHub 微信/抖音/B站/微博）=====
 RSS_URLS = [
-    # 1. Google News 多关键词搜索（基础）
+    # Google News 多关键词搜索（基础）
     "https://news.google.com/rss/search?q=Manchester+United+OR+%E6%9B%BC%E8%81%94+OR+%E7%BA%A2%E9%AD%94+OR+MUFC+OR+%E6%9B%BC%E5%BD%BB%E6%96%AF%E7%89%B9%E8%81%94+OR+Man+Utd+OR+%E6%A0%BC%E6%9E%97%E4%BC%8D%E5%BE%B7&hl=zh-CN&gl=CN&ceid=CN:zh-Hans",
 
-    # 2. 主流体育媒体
+    # 主流体育媒体
     "http://feeds.bbci.co.uk/sport/football/teams/manchester-united/rss.xml",
     "https://www.skysports.com/feeds/teams/manchester-united",
     "https://www.espn.com/espn/rss/teams/news?id=360",
     "https://www.theguardian.com/football/manchester-united/rss",
     "https://www.telegraph.co.uk/sport/football/teams/manchester-united/rss",
 
-    # 3. 俱乐部官方
+    # 俱乐部官方
     "https://www.manutd.com/feed",
 
-    # 4. 球迷社区
+    # 球迷社区
     "https://www.reddit.com/r/reddevils/.rss",
 
-    # 5. 国内体育媒体
+    # 国内体育媒体
     "https://sports.sina.com.cn/global/manchesterunited/feed/",
     "https://www.dongqiudi.com/teams/5/feed/",
 
-    # 6. RSSHub 生成的社交媒体搜索
+    # RSSHub 生成的社交媒体搜索
     "https://rsshub.app/wechat/search/曼联",
     "https://rsshub.app/douyin/search/曼联",
     "https://rsshub.app/bilibili/vsearch/曼联",
@@ -103,4 +103,9 @@ def get_new_feed_items():
         key=lambda x: _parse_struct_time_to_timestamp(x.get("published_parsed"))
     )
     print(f"总共 {len(all_new_feed_items)} 条新文章待推送")
+
+    for item in all_new_feed_items:
+        text = f"{item['title']}\n{item['link']}"
+        send_feishu_message(text)
+
     return all_new_feed_items
